@@ -1,0 +1,14 @@
+# emacs
+\#*\#
+*~
+TAGS
+
+# bundler state
+/.bundle
+/vendor/bundle/
+.bundle
+
+db/*.sqlite3
+log/*.log
+tmp/
+.sass-cache/

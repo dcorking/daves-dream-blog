@@ -1,0 +1,25 @@
+<h1>Listing dreams</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @dreams.each do |dream| %>
+  <tr>
+    <td><%= dream.title %></td>
+    <td><%= dream.description %></td>
+    <td><%= link_to 'Show', dream %></td>
+    <td><%= link_to 'Edit', edit_dream_path(dream) %></td>
+    <td><%= link_to 'Destroy', dream, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Dream', new_dream_path %>
