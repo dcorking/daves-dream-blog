@@ -1,9 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/Fixtures.html
 
-one:
-  title: MyString
-  description: MyString
+good:
+  title: A dream about a horse
+  description: A horse, a horse, my kingdom for a horse.
 
-two:
-  title: MyString
-  description: MyString
+one_and_only:
+  title: A duplicate title
+  description: Titles must be unique

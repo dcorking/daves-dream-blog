@@ -1,7 +1,13 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
-require 'minitest'
+gem "minitest"
+require "minitest/autorun"
+require 'ruby-debug'
+
+# Autotest.add_hook :initialize do |at|
+#   at.testlib = ".minitest"
+# end
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
