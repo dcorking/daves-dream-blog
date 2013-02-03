@@ -14,7 +14,8 @@ group :assets do
   gem 'sass-rails', "  ~> 3.1.0"
   gem 'coffee-rails', "~> 3.1.0"
   gem 'uglifier'
-  gem 'therubyracer'
+  gem 'therubyracer', '0.10.2'
+
 end
 
 gem 'jquery-rails'
@@ -26,10 +27,15 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 # To use debugger
-gem 'ruby-debug19', :require => 'ruby-debug'
+# gem 'ruby-debug19', :require => 'ruby-debug'
 
 group :test do
   # Pretty printed test output
   gem 'turn', :require => false
-  gem 'minitest'
+  gem 'minitest', '4.3.3'
+  gem 'ZenTest'
+end
+
+group :development, :test do
+  gem 'ruby-debug19', :require => 'ruby-debug'
 end
