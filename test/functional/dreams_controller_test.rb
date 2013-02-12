@@ -2,7 +2,7 @@ require 'test_helper'
 
 class DreamsControllerTest < ActionController::TestCase
   setup do
-    @dream = dreams(:one)
+    @dream = dreams(:good)
   end
 
   test "should get index" do

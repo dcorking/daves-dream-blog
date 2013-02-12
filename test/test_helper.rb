@@ -9,6 +9,8 @@ require 'ruby-debug'
 #   at.testlib = ".minitest"
 # end
 
+require 'minitest/autorun'
+
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
   #

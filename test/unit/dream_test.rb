@@ -3,30 +3,39 @@ require 'test_helper'
 class DreamTest < ActiveSupport::TestCase
 
   test "should reject new dream without title" do
-    debugger
-    # assert true
+    descr = 'This dream has no title'
+    dream = Dream.create(:title => '', :description => descr)
+    assert dream.errors.include?(:title)
   end
-# title_missing:
-#   title:
-#   description: This dream has no title.
 
-  test "should reject new dream without description" 
-# description_missing:
-#   title:
-#   description: This dream has no description.
+  test "should reject new dream without description" do
+    title = 'This dream has no description.'
+    dream = Dream.create(:title => title, :description => '')
+    assert dream.errors.include?(:description)
+  end
 
   test "should reject edit to dream without title" do
-    pending
-    # not implemented
+    dream = dreams(:good)
+    dream.update_attributes(:title => '', :description => 'I changed the description')
+    dream.save
+    assert dream.errors.include?(:title)
   end
 
-  test "should reject new dream with title shorter than 10 chars" do
+  test "should reject edit to dream without description" do
+    dreams(:good).update_attributes(:title => 'I changed the title', :description => '')
+    dreams(:good).save
+    assert dreams(:good).errors.include?(:description)
+  end
+
+  test "should reject new dream with description shorter than 10 chars" do
+    pending
   end
 # short:
-#   title: A dream whose title is too short
+#   title: A dream whose description is too short
 #   description: Eight ch
 
   test "should reject new dream with description shorter than 500 chars" do
+    pending "not implemented"
 # long:
 #   title: A dream whose description is too long
 #   description: 501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too muc
@@ -38,13 +47,16 @@ class DreamTest < ActiveSupport::TestCase
 #   description:Only 10 ch
   end
 
-  test "should reject edit to dream title shorter than 10 chars" do
+  test "should reject edit to dream description shorter than 10 chars" do
+    pending
   end
 
   test "should reject edit to dream description longer than 500 chars" do
+    pending
   end
 
   test "should reject duplicate title " do
+    pending
   end
 # one_and_only:
 #   title: A duplicate title
@@ -53,7 +65,8 @@ class DreamTest < ActiveSupport::TestCase
 #   title: A duplicate title
 #   description: The app should reject dreams with identical titles.
 
-  test "should reject duplicate description" do
+  test "should accept duplicate description with unique title" do
+    pending
   end
 
 end
