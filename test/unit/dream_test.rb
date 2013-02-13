@@ -28,31 +28,36 @@ class DreamTest < ActiveSupport::TestCase
   end
 
   test "should reject new dream with description shorter than 10 chars" do
-    pending
+    dream = Dream.create(:title => 'A dream whose description is too short', :description  => 'Eight ch')
+    assert dream.errors.include?(:description)
   end
-# short:
-#   title: A dream whose description is too short
-#   description: Eight ch
 
-  test "should reject new dream with description shorter than 500 chars" do
-    pending "not implemented"
-# long:
-#   title: A dream whose description is too long
-#   description: 501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too muc
-# short_enough:
-#   title: A dream whose description is exactly 500 chars
-#   description: 501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu501 characters is too mu
-# long_enough:
-#   title: A dream whose description is exactly 10 chars
-#   description:Only 10 ch
+  test "should reject new dream with description longer than 500 chars" do
+    dream = Dream.create(:title => 'A dream whose description is too long', :description =>  '501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too much')
+    assert dream.errors.include?(:description)
+  end
+
+
+  test "should accept a new dream of max length" do
+    dream = Dream.create(:title => 'A dream whose description is exactly 500 chars', :description => '501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc')
+    refute dream.errors.include?(:description)
+  end
+
+  test "should accept a description of the minimum length" do
+    dream = Dream.create(:title => 'A dream whose description is exactly 10 chars', :description => 'Only 10 ch')
+    refute dream.errors.include?(:description), 'validation error on a valid description'
   end
 
   test "should reject edit to dream description shorter than 10 chars" do
-    pending
+    assert_raises (ActiveRecord::RecordInvalid) do
+      Dream.create!(:title => 'Short dream', :description => 'Only 9 ch')
+    end
   end
 
   test "should reject edit to dream description longer than 500 chars" do
-    pending
+    dreams(:good).description = '501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too muc501 characters is too much'
+    dreams(:good).save
+    assert dreams(:good).errors.include?(:description)
   end
 
   test "should reject duplicate title " do
