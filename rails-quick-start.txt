@@ -922,3 +922,185 @@ The multiline version of the block syntax is also fine:
     assert_raises (ActiveRecord::RecordInvalid) do
       Dream.create!(:title => 'Short dream', :description => 'Only 9 ch')
     end
+
+## Moving to a new development machine, and upgrading to Rails 3.2
+*August 4, 2013*
+
+Git cloned, then edited the Gemfile to upgrade to Rails 3.2
+
+Your bundle is updated!
+david2@www:~/daves-dream-blog$ rails s
+/home/david2/.rvm/gems/ruby-1.9.3-p448/gems/ruby-debug-base19-0.11.25/lib/ruby-debug-base\
+.rb:1:in `require': /home/david2/.rvm/gems/ruby-1.9.3-p448/gems/ruby-debug-base19-0.11.25\
+/lib/ruby_debug.so: undefined symbol: ruby_current_thread - /home/david2/.rvm/gems/ruby-1\
+.9.3-p448/gems/ruby-debug-base19-0.11.25/lib/ruby_debug.so (LoadError)
+        from /home/david2/.rvm/gems/ruby-1.9.3-p448/gems/ruby-debug-base19-0.11.25/lib/ru\
+by-debug-base.rb:1:in `<top (required)>'
+
+Switched from gem `'reby-debug19'` to `gem 'debugger'`
+
+````
+$ bundle install --without :production :assets`
+david2@www:~/daves-dream-blog$ rails s
+=> Booting WEBrick
+=> Rails 3.2.14 application starting in development on http://0.0.0.0:3000
+=> Call with -d to detach
+=> Ctrl-C to shutdown server
+[2013-08-04 08:15:21] INFO  WEBrick 1.3.1
+[2013-08-04 08:15:21] INFO  ruby 1.9.3 (2013-06-27) [i686-linux]
+[2013-08-04 08:15:21] WARN  TCPServer Error: Address already in use - bind(2)
+Exiting
+/home/david2/.rvm/rubies/ruby-1.9.3-p448/lib/ruby/1.9.1/webrick/utils.rb:85:in `initialize': Address already in use - bind(2) (Errno::EADDRINUSE)
+
+Something already using port 3000 on that machine.
+
+Logout and back in again forwarding port 3001 this time
+
+````
+david2@www:~/daves-dream-blog$ rails s -p 3001
+=> Booting WEBrick
+=> Rails 3.2.14 application starting in development on http://0.0.0.0:3001
+=> Call with -d to detach
+=> Ctrl-C to shutdown server
+[2013-08-04 08:17:50] INFO  WEBrick 1.3.1
+[2013-08-04 08:17:50] INFO  ruby 1.9.3 (2013-06-27) [i686-linux]
+[2013-08-04 08:17:50] INFO  WEBrick::HTTPServer#start: pid=9412 port=3001
+
+
+Started GET "/" for 127.0.0.1 at 2013-08-04 08:17:55 +0100
+Connecting to database specified by database.yml
+
+ActionController::RoutingError (No route matches [GET] "/"):
+  actionpack (3.2.14) lib/action_dispatch/middleware/debug_exceptions.rb:21:in `call'
+...
+Started GET "/dreams" for 127.0.0.1 at 2013-08-04 08:18:02 +0100
+Processing by DreamsController#index as HTML
+Completed 500 Internal Server Error in 1ms
+
+ActiveRecord::StatementInvalid (Could not find table 'dreams'):
+  app/controllers/dreams_controller.rb:5:in `index'
+...
+
+david2@www:~/daves-dream-blog$ rake routes
+    dreams GET    /dreams(.:format)          dreams#index
+           POST   /dreams(.:format)          dreams#create
+ new_dream GET    /dreams/new(.:format)      dreams#new
+edit_dream GET    /dreams/:id/edit(.:format) dreams#edit
+     dream GET    /dreams/:id(.:format)      dreams#show
+           PUT    /dreams/:id(.:format)      dreams#update
+           DELETE /dreams/:id(.:format)      dreams#destroy
+david2@www:~/daves-dream-blog$ rake db:init
+rake aborted!
+Don't know how to build task 'db:init'
+/home/david2/.rvm/gems/ruby-1.9.3-p448/bin/ruby_noexec_wrapper:14:in `eval'
+/home/david2/.rvm/gems/ruby-1.9.3-p448/bin/ruby_noexec_wrapper:14:in `<main>'
+(See full trace by running task with --trace)
+david2@www:~/daves-dream-blog$ rake db:migrate
+==  CreateDreams: migrating ===================================================
+-- create_table(:dreams)
+   -> 0.0013s
+==  CreateDreams: migrated (0.0014s) ==========================================
+```
+
+But after the migration, I get a sass error, even after a more aggressive bundle install:
+````
+WARN: tilt autoloading 'sass' in a non thread-safe way; explicit require 'sass' suggested.
+Connecting to database specified by database.yml
+   (0.1ms)  select sqlite_version(*)
+   (28.4ms)  CREATE TABLE "schema_migrations" ("version" varchar(255) NOT NULL) 
+   (3.4ms)  CREATE UNIQUE INDEX "unique_schema_migrations" ON "schema_migrations" ("version")
+   (0.1ms)  SELECT "schema_migrations"."version" FROM "schema_migrations" 
+Migrating to CreateDreams (20121206105527)
+   (0.0ms)  begin transaction
+   (0.4ms)  CREATE TABLE "dreams" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar(255), "description" varchar(255), "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL) 
+   (0.1ms)  INSERT INTO "schema_migrations" ("version") VALUES ('20121206105527')
+   (3.6ms)  commit transaction
+   (0.1ms)  SELECT "schema_migrations"."version" FROM "schema_migrations" 
+
+
+Started GET "/dreams" for 127.0.0.1 at 2013-08-04 08:19:52 +0100
+Processing by DreamsController#index as HTML
+  Dream Load (0.1ms)  SELECT "dreams".* FROM "dreams" 
+  Rendered dreams/index.html.erb within layouts/application (1.0ms)
+Completed 500 Internal Server Error in 17ms
+
+ActionView::Template::Error (cannot load such file -- sass
+  (in /home/david2/daves-dream-blog/app/assets/stylesheets/dreams.css.scss)):
+    2: <html>
+    3: <head>
+    4:   <title>Dreamblog</title>
+    5:   <%= stylesheet_link_tag    "application" %>
+    6:   <%= javascript_include_tag "application" %>
+    7:   <%= csrf_meta_tags %>
+    8: </head>
+  app/views/layouts/application.html.erb:5:in `_app_views_layouts_application_html_erb___813278160_95592860'
+  app/controllers/dreams_controller.rb:7:in `index'
+
+````
+
+The framework trace looks like this:
+
+````
+activesupport (3.2.14) lib/active_support/dependencies.rb:251:in `require'
+activesupport (3.2.14) lib/active_support/dependencies.rb:251:in `block in require'
+activesupport (3.2.14) lib/active_support/dependencies.rb:236:in `load_dependency'
+activesupport (3.2.14) lib/active_support/dependencies.rb:251:in `require'
+tilt (1.4.1) lib/tilt/template.rb:144:in `require_template_library'
+tilt (1.4.1) lib/tilt/css.rb:16:in `initialize_engine'
+tilt (1.4.1) lib/tilt/template.rb:56:in `initialize'
+...
+````
+
+So I should probably do what I was told with sass.
+
+I think adding this to Gemfile might help:
+    gem 'saas', :require => 'saas'
+http://stackoverflow.com/questions/6091865/sass-in-a-non-thread-safe-way
+
+    bundle install --without :production
+
+No change. Restarted server
+
+I got one line further. Asset pipeline is broken.
+
+````
+Sprockets::FileNotFound in Dreams#index
+Showing /home/david2/daves-dream-blog/app/views/layouts/application.html.erb where line #6 raised:
+
+couldn't find file 'jquery'
+  (in /home/david2/daves-dream-blog/app/assets/javascripts/application.js:7)
+````
+
+So perhaps I should have explicit asset pipeline versions in the Gemfile, as in the release notes.
+
+/home/david2/.rvm/gems/ruby-1.9.3-p448/gems/railties-3.2.14/guides/source/3_2_release_notes.textile
+
+  gem 'sass-rails', '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
+  gem 'uglifier', '>=1.0.3'
+
+(bundle install and restart)
+
+````
+Sprockets::FileNotFound in Dreams#index
+
+Showing /home/david2/daves-dream-blog/app/views/layouts/application.html.erb where line #6 raised:
+
+couldn't find file 'jquery'
+  (in /home/david2/daves-dream-blog/app/assets/javascripts/application.js:7)
+````
+
+Clearly I should not have deleted 
+gem 'jquery-rails'
+from the Gemfile.
+
+So a plain Rails app needs jquery even if I don't explicitly use it.
+
+And so it is up - successfully upgraded. Straightforward. At least it
+wasn't complicated, though it took time, perhaps because I unfairly
+slashed at the Gemfile, nor did I follow the release notes.
+
+
+
+
+
