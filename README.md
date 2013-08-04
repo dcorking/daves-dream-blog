@@ -1,4 +1,4 @@
-Dav'es Dream Blog
+Dave's Dream Blog
 =================
 
 A toy blog as a demo for TDD. Not for use on live sites. 
