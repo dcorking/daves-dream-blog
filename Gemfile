@@ -1,7 +1,6 @@
 source 'http://rubygems.org'
 
 gem 'rails', '~>3.2'
-gem 'saas', :require => 'saas'
 gem 'jquery-rails'
 
 # Bundle edge Rails instead:
