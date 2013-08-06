@@ -1100,6 +1100,48 @@ And so it is up - successfully upgraded. Straightforward. At least it
 wasn't complicated, though it took time, perhaps because I unfairly
 slashed at the Gemfile, nor did I follow the release notes.
 
+magit-push didn't work
+
+````
+$ git --no-pager push -v origin master:refs/heads/master
+Pushing to git@github.com:dcorking/daves-dream-blog.git
+
+fatal: The remote end hung up unexpectedly
+git exited abnormally with code 128.
+````
+but the shell error message was more helpful
+````
+$ git push
+Permission denied (publickey).
+fatal: The remote end hung up unexpectedly
+david2@www:~/daves-dream-blog$ 
+````
+
+Maybe something to do with detaching from screen, logging out and back in again.
+
+Pretty sure it was, as I quit screen, logged out, back in again,
+restarted screen and ran git push from an emacs subshell. It worked fine!
+
+rake test traceback
+
+````
+david2@www:~/daves-dream-blog$ bundle exec rake test
+/home/david2/.rvm/gems/ruby-1.9.3-p448/gems/activerecord-3.2.14/lib/active_record/dynamic_matchers.rb:55:in `method_missing': undefined method `state_machine' for Subscription(Table doesn't exist):Class (NoMethodError)
+	from /home/david2/.rvm/gems/ruby-1.9.3-p448/gems/saas-0.1.1/app/models/subscription.rb:20:in `<class:Subscription>'
+	from /home/david2/.rvm/gems/ruby-1.9.3-p448/gems/saas-0.1.1/app/models/subscription.rb:1:in `<top (required)>'
+````
+
+Also there is a repeated warning from the asset pipeline
+
+Started GET "/assets/application.css?body=1" for 127.0.0.1 at 2013-08-04 22:58:06 +0100
+Served asset /application.css - 304 Not Modified (4ms)
+[2013-08-04 22:58:06] WARN  Could not determine content-length of response body. Set content-length of the response or set Response#chunked = true
+
+### August 5, 2013
+
+david2@www:~/daves-dream-blog$ bundle exec ruby -Itest test/functional/dreams_controller_test.rb 
+/home/david2/.rvm/gems/ruby-1.9.3-p448/gems/activerecord-3.2.14/lib/active_record/dynamic_matchers.rb:55:in `method_missing': undefined method `state_machine' for Subscription(Table doesn't exist):Class (NoMethodError)
+	from /home/david2/.rvm/gems/ruby-1.9.3-p448/gems/saas-0.1.1/app/models/subscription.rb:20:in `<class:Subscription>'
 
 
 
